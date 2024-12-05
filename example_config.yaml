@@ -1,0 +1,26 @@
+listener:
+  package_name: py_pubsub
+  executable: listener.launch.py
+  enable: 'true'
+  parameters:
+    use_listener: 'true'
+    name: 'listener'
+    namespace: 'talking'
+
+talker:
+  package_name: py_pubsub
+  executable: talker.launch.py
+  enable: 'true'
+  parameters:
+    use_talker: 'true'
+    name: 'talker123'
+    namespace: 'talking'
+
+talker1:
+  package_name: py_pubsub
+  executable: talker.launch.py
+  enable: 'true'
+  parameters:
+    use_talker: 'true'
+    name: 'talker1'
+    namespace: 'talking2'
