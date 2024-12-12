@@ -1,14 +1,12 @@
+from typing import List
 from launch import LaunchDescription, LaunchContext
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
-from launch.conditions import IfCondition
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
-from launch_ros.actions import Node
 import yaml
 from launch_ros.substitutions import FindPackageShare
-from pathlib import Path
+from fbot_bringup.error_validator import ErrorValidator
 
-
-def yaml_to_dict(config_file_path):
+def yamlToDict(config_file_path):
     with open(config_file_path, "r") as f:
         return yaml.load(f, Loader=yaml.SafeLoader)
     
@@ -22,15 +20,19 @@ def launchFactory(launchConfiguration: dict):
         ],
     )
 def generateMultipleLaunchesInstances(context: LaunchContext, config_file_path: LaunchConfiguration):
-
     # Resolve the path to the configuration file
     resolved_path = context.perform_substitution(config_file_path)
-    launchesInformations = yaml_to_dict(resolved_path)  # Load YAML configuration
-
+    launchesInformations = yamlToDict(resolved_path)  # Load YAML configuration
     launchList = []
-    for _, values in launchesInformations.items():
+    errorValidator = ErrorValidator()
+    for key, values in launchesInformations.items():
+        ErrorValidator.validateLaunchConfiguration(launchConfiguration=values, parent=key)
+        namespace = values['parameters'].get('namespace', None)
+        errorValidator.checkNameSpace(namespace=namespace, executable=values['executable'], enable=values['enable'])
         if values['enable'] == 'true':
             launchList.append(launchFactory(values))
+
+    ErrorValidator.checkLaunchListNotEmpty(launchList)
     return launchList
 
 def generate_launch_description():

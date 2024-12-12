@@ -1,3 +1,5 @@
 All skills must have a launch;
 All skills launches must be named <skill>.launch.py;
-In the skill launch the name must be parametrized.
+In the skill launch the name must be parametrized;
+In the skill, yaml call, the name must be parametrized inside 'parameters' field;
+In the skill, yaml call, the namespace must be parametrized inside 'parameters' field.
