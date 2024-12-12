@@ -7,6 +7,24 @@ import yaml
 from launch_ros.substitutions import FindPackageShare
 from pathlib import Path
 
+"""
+@file full_bringup.launch.py
+@brief Launch file for bringing up multiple ROS nodes based on a YAML configuration file.
+This launch file reads a YAML configuration file and launches multiple ROS nodes as specified in the file.
+Each node's launch configuration is defined in the YAML file, including the package name, executable, and parameters.
+Functions:
+    yaml_to_dict(config_file_path)
+        Reads a YAML file and converts it to a dictionary.
+    launchFactory(launchConfiguration)
+        Creates an IncludeLaunchDescription action based on the provided launch configuration dictionary.
+    generateMultipleLaunchesInstances(context, config_file_path)
+        Generates a list of launch descriptions for nodes that are enabled in the YAML configuration file.
+    generate_launch_description()
+        Generates the main launch description, including the declaration of launch arguments and the opaque function to generate multiple launch instances.
+@param config_file_path: Path to the YAML configuration file.
+@type config_file_path: str
+@return LaunchDescription
+"""
 
 def yaml_to_dict(config_file_path):
     with open(config_file_path, "r") as f:
