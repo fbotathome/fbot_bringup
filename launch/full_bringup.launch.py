@@ -1,4 +1,3 @@
-from typing import List
 from launch import LaunchDescription, LaunchContext
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
