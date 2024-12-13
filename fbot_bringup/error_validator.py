@@ -1,4 +1,6 @@
 from typing import List
+import warnings
+from termcolor import colored
 
 
 class ErrorValidator:
@@ -9,7 +11,7 @@ class ErrorValidator:
         if enable != 'true':
             return
         if (namespace, executable) in self.nameSpacesAndExecutables:
-            raise ValueError(f"\033[91mThe namespace '{namespace}' and executable '{executable}' are already defined\033[0m")
+            raise ValueError(colored(f"THE NAMESPACE '{namespace}' AND EXECUTABLE '{executable}' ARE ALREADY DEFINED", 'red'))
         self.nameSpacesAndExecutables.append((namespace, executable))
 
     @staticmethod
@@ -17,19 +19,23 @@ class ErrorValidator:
         requiredKeys = ['executable', 'package_name', 'enable', 'parameters']
         for key in requiredKeys:
             if key not in launchConfiguration:
-                raise ValueError(f"\033[91mThe param '{key}' is missing in '{parent}' launch configuration\033[0m")
+                raise ValueError(colored(f"THE PARAM '{key}' IS MISSING IN '{parent}' LAUNCH CONFIGURATION", 'red'))
         if not isinstance(launchConfiguration['parameters'], dict):
-            raise TypeError("\033[91mParameters should be a dictionary\033[0m")
+            raise TypeError(colored("PARAMETERS SHOULD BE A DICTIONARY", 'red'))
         
         if 'name' not in launchConfiguration['parameters']:
-            raise ValueError(f"\033[91mThe 'parameters' dictionary must contain the 'name' key in '{parent}' launch configuration\033[0m")
+            raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'name' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
         if 'namespace' not in launchConfiguration['parameters']:
-            raise ValueError(f"\033[91mThe 'parameters' dictionary must contain the 'namespace' key in '{parent}' launch configuration\033[0m")
+            raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'namespace' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
         
         if not launchConfiguration['executable'].endswith('.launch.py'):
-            raise ValueError(f"\033[91mThe launch file '{launchConfiguration['executable']}' must have the suffix '.launch.py'\033[0m")
+            raise ValueError(colored(f"THE LAUNCH FILE '{launchConfiguration['executable']}' MUST HAVE THE SUFFIX '.LAUNCH.PY'", 'red'))
+
+        for key, value in launchConfiguration['parameters'].items():
+            if value is None:
+                warnings.warn(colored(f"THE PARAMETER '{key}' IN '{parent}' LAUNCH CONFIGURATION CANNOT BE NONE", 'yellow'), UserWarning)
 
     @staticmethod
     def checkLaunchListNotEmpty(launchList: List):
         if len(launchList) == 0:
-            raise RuntimeError("\033[91mNo launch configurations are enabled. Ensure that the 'enable' parameter is set to 'true' as a string in the configuration file.\033[0m")
+            raise RuntimeError(colored("NO LAUNCH CONFIGURATIONS ARE ENABLED. ENSURE THAT THE 'ENABLE' PARAMETER IS SET TO 'TRUE' AS A STRING IN THE CONFIGURATION FILE.", 'red'))
