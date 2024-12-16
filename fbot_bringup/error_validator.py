@@ -23,10 +23,10 @@ class ErrorValidator:
         if not isinstance(launchConfiguration['parameters'], dict):
             raise TypeError(colored("PARAMETERS SHOULD BE A DICTIONARY", 'red'))
         
-        if 'name' not in launchConfiguration['parameters']:
-            raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'name' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
-        if 'namespace' not in launchConfiguration['parameters']:
-            raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'namespace' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
+        # if 'name' not in launchConfiguration['parameters']:
+        #     raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'name' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
+        # if 'namespace' not in launchConfiguration['parameters']:
+        #     raise ValueError(colored(f"THE 'parameters' DICTIONARY MUST CONTAIN THE 'namespace' KEY IN '{parent}' LAUNCH CONFIGURATION", 'red'))
         
         if not launchConfiguration['executable'].endswith('.launch.py'):
             raise ValueError(colored(f"THE LAUNCH FILE '{launchConfiguration['executable']}' MUST HAVE THE SUFFIX '.LAUNCH.PY'", 'red'))
