@@ -13,7 +13,7 @@ def generate_launch_description():
     # Return the launch description
     return LaunchDescription([
         IncludeLaunchDescription(
-            PathJoinSubstitution([FindPackageShare('py_pubsub'), 'super_version_launch_poc.launch.py']),
+            PathJoinSubstitution([FindPackageShare('fbot_bringup'), 'full_bringup.launch.py']),
             launch_arguments=[('config_file_path', config_file)]
         )
     ])
