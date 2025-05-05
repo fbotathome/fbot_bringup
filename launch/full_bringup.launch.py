@@ -25,6 +25,7 @@ def generateMultipleLaunchesInstances(context: LaunchContext, config_file_path: 
     launchList = []
     errorValidator = ErrorValidator()
     for key, values in launchesInformations.items():
+        print(f"Key: {key}, Values: {values}")
         ErrorValidator.validateLaunchConfiguration(launchConfiguration=values, parent=key)
         namespace = values['parameters'].get('namespace', None)
         errorValidator.checkNameSpace(namespace=namespace, executable=values['executable'], enable=values['enable'])

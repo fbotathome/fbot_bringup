@@ -1,0 +1,9 @@
+test:
+  package_name: fbot_world
+  executable: launch/pose.launch.py
+  enable: 'true'
+  parameters:
+    name: 'pose'
+    namespace: 'pose'
+    config_file_name : 'pose_criarg'
+    
