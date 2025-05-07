@@ -6,8 +6,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from ament_index_python.packages import get_package_share_directory
 
-# This launch file runs nav2_stack and sensors, but not the robot description
-
 def generate_launch_description():
 
     navigation = IncludeLaunchDescription(
