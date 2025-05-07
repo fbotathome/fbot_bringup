@@ -24,7 +24,6 @@ def generate_launch_description():
     world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("fbot_world_bringup"), 'launch', 'pose.launch.py')
-        
         ),
         launch_arguments={
             'config_file_name': config_file_name
