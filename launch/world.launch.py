@@ -13,25 +13,25 @@ def generate_launch_description():
     declared_arguments = []
     declared_arguments.append(
         DeclareLaunchArgument(
-            'arm_z_position',
-            default_value='0.23',
-            description='Z position of the arm in meters'
+            'config_file_name',
+            default_value='pose',
+            description='Name of the world configuration file'
         )
     )
 
-    arm_z_position = LaunchConfiguration('arm_z_position')
+    config_file_name = LaunchConfiguration('config_file_name')
 
-    robot_launch = IncludeLaunchDescription(
+    world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("boris_description"), 'launch', 'boris_description.launch.py')
+            os.path.join(get_package_share_directory("fbot_world_bringup"), 'launch', 'pose.launch.py')
         
         ),
         launch_arguments={
-            'arm_z_position': arm_z_position
+            'config_file_name': config_file_name
         }.items()
     )
 
     return LaunchDescription([
         *declared_arguments,
-        robot_launch,
+        world,
     ])
