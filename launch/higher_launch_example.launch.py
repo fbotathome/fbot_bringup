@@ -7,8 +7,8 @@ from pathlib import Path
 
 def generate_launch_description():
     # Get the package share directory
-    package_share_dir = get_package_share_directory('py_pubsub')
-    config_file = str(Path(package_share_dir) / 'config/config.yaml')
+    package_share_dir = get_package_share_directory('fbot_bringup')
+    config_file = str(Path(package_share_dir) / 'vision.yaml')
 
     # Return the launch description
     return LaunchDescription([
