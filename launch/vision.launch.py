@@ -8,6 +8,8 @@ from launch.substitutions import LaunchConfiguration
 
 from ament_index_python.packages import get_package_share_directory
 
+#THIS LAUNCHFILE IS FOR TESTING PURPOSES ONLY, IT SHOULD NOT BE USED FOR NOW.
+
 def generate_launch_description():
 
     launch_object_recognition = DeclareLaunchArgument(
