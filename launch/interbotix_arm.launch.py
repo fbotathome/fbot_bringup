@@ -10,11 +10,10 @@ def generate_launch_description():
 
     arm = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("interbotix_xsarm_moveit"), 'launch', 'xsarm_moveit.launch.py')
+            os.path.join(get_package_share_directory("interbotix_xsarm_control"), 'launch', 'xsarm_control.launch.py')
         ),
         launch_arguments={
             'robot_model': 'wx200',
-            'hardware_type': 'fake',
         }.items()
     )
 
