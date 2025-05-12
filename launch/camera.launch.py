@@ -11,7 +11,6 @@ from ament_index_python.packages import get_package_share_directory
 def validate_camera_config(context):
     if context.launch_configurations.get('use_realsense', 'false') == 'false':
         raise Exception("All the camera nodes are disabled. Please enable at least one camera node.")
-    
 
 def generate_launch_description():
 
@@ -41,6 +40,3 @@ def generate_launch_description():
         OpaqueFunction(function=validate_camera_config),
         realsense2_node,
     ])
-
-
-
