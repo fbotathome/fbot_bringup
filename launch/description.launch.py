@@ -21,7 +21,7 @@ def generate_launch_description():
 
     arm_z_position = LaunchConfiguration('arm_z_position')
 
-    robot_launch = IncludeLaunchDescription(
+    description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("boris_description"), 'launch', 'boris_description.launch.py')
         ),
@@ -32,5 +32,5 @@ def generate_launch_description():
 
     return LaunchDescription([
         *declared_arguments,
-        robot_launch,
+        description,
     ])
