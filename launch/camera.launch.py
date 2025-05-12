@@ -14,10 +14,13 @@ def validate_camera_config(context):
 
 def generate_launch_description():
 
-    use_realsense_arg = DeclareLaunchArgument(
-        'use_realsense',
-        default_value='false',
-        description="If should launch a realsense"
+    declared_arguments = []
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'use_realsense',
+            default_value='false',
+            description='If should launch the realsense'
+        )
     )
 
     realsense2_node = IncludeLaunchDescription(
@@ -36,7 +39,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        use_realsense_arg,
+        *declared_arguments,
         OpaqueFunction(function=validate_camera_config),
         realsense2_node,
     ])
