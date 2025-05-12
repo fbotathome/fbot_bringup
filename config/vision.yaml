@@ -5,5 +5,5 @@ object_recognition:
   parameters:
     name: 'yolov8_object_recognition'
     namespace: 'object_recognition'
-    launch_realsense: 'false'
+    launch_realsense: 'true'
     use_remote: 'false'
