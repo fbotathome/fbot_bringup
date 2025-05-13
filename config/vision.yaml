@@ -1,0 +1,9 @@
+object_recognition:
+  package_name: fbot_recognition
+  executable: yolov8_object_recognition.launch.py
+  enable: 'true'
+  parameters:
+    name: 'yolov8_object_recognition'
+    namespace: 'object_recognition'
+    launch_realsense: 'true'
+    use_remote: 'false'
