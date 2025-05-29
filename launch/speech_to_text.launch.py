@@ -12,7 +12,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    launch_synthesizer_speech = DeclareLaunchArgument(
+    synthesizer_speech_arg = DeclareLaunchArgument(
         'launch_speec_to_text',
         default_value='true',
         description="If should launch the synthesizer speech node"
