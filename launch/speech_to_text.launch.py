@@ -21,7 +21,6 @@ def generate_launch_description():
     synthesizer_speech = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("fbot_hri_bringup"), 'speech_to_text.launch.py')
-        
         ),
         launch_arguments={
             'use_remote': 'false',
