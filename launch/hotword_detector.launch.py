@@ -12,23 +12,22 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    launch_synthesizer_speech = DeclareLaunchArgument(
-        'launch_synthesizer_speech',
+    hotword_detector_arg = DeclareLaunchArgument(
+        'launch_hotword_detector',
         default_value='true',
         description="If should launch the synthesizer speech node"
     )
 
-    synthesizer_speech = IncludeLaunchDescription(
+    hotword_detector = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'synthesizer_speech.launch.py')
-        
+            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'hotword_detector.launch.py')
         ),
         launch_arguments={
-            'use_remote': 'true',
+            'use_remote': 'false',
         }.items()
     )
 
     return LaunchDescription([
-        launch_synthesizer_speech,
-        synthesizer_speech,
+        hotword_detector_arg,
+        hotword_detector,
     ])

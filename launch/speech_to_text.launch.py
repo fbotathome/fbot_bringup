@@ -24,6 +24,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'use_remote': 'false',
+            'config_file_name': LaunchConfiguration('config_file_name', default='fbot_stt_quiz.yaml'),
         }.items()
     )
 
