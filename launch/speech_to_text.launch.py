@@ -29,6 +29,6 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        launch_synthesizer_speech,
+        synthesizer_speech_arg,
         synthesizer_speech,
     ])
