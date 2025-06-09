@@ -18,17 +18,24 @@ def generate_launch_description():
         description="If should launch the synthesizer speech node"
     )
 
+    config_remote_arg = DeclareLaunchArgument(
+        'use_remote',
+        default_value='true',
+        description="If should run the node on remote"
+    )
+
     synthesizer_speech = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("fbot_hri_bringup"), 'synthesizer_speech.launch.py')
         
         ),
         launch_arguments={
-            'use_remote': 'false',
+            'use_remote': LaunchConfiguration("use_remote"),
         }.items()
     )
 
     return LaunchDescription([
         launch_synthesizer_speech,
+        config_remote_arg,
         synthesizer_speech,
     ])
