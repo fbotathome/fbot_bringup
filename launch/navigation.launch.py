@@ -14,7 +14,8 @@ def generate_launch_description():
 
         ),
         launch_arguments={
-            'use_description': 'false'
+            'use_description': 'false',
+            'use_rviz': 'false'
         }.items()
     )
 
