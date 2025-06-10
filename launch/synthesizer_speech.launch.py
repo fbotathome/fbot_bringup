@@ -12,8 +12,8 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    launch_synthesizer_speech = DeclareLaunchArgument(
-        'launch_synthesizer_speech',
+    use_remote_arg = DeclareLaunchArgument(
+        'use_remote',
         default_value='true',
         description="If should launch the synthesizer speech node"
     )
@@ -24,11 +24,11 @@ def generate_launch_description():
         
         ),
         launch_arguments={
-            'use_remote': 'true',
+            'use_remote': LaunchConfiguration('use_remote'),
         }.items()
     )
 
     return LaunchDescription([
-        launch_synthesizer_speech,
+        use_remote_arg,
         synthesizer_speech,
     ])
