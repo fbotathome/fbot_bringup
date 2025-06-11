@@ -22,9 +22,10 @@ def generate_launch_description():
 
         ),
         launch_arguments={
-            'use_description': 'false'
+            'use_description': 'false',
+            'use_rviz': 'false'
         }.items(),
-        condition=UnlessCondition(LaunchConfiguration('use_rviz')),
+        condition=UnlessCondition(LaunchConfiguration('use_keepout_zones')),
 
     )
 
@@ -34,9 +35,10 @@ def generate_launch_description():
 
         ),
         launch_arguments={
-            'use_description': 'false'
+            'use_description': 'false',
+            'use_rviz': 'false'
         }.items(),
-        condition=IfCondition(LaunchConfiguration('use_rviz')),
+        condition=IfCondition(LaunchConfiguration('use_keepout_zones')),
     )
 
     return LaunchDescription([
