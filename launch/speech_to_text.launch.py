@@ -22,7 +22,7 @@ def generate_launch_description():
             os.path.join(get_package_share_directory("fbot_hri_bringup"), 'speech_to_text.launch.py')
         ),
         launch_arguments={
-            'challenge_config': LaunchConfiguration('challenge_config', default='fbot_stt_quiz.yaml'),
+            'challenge_config': LaunchConfiguration('challenge_config'),
         }.items()
     )
 
