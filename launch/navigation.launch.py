@@ -38,7 +38,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'use_description': use_description,
-            'use_navigation_rviz': use_navigation_rviz
+            'use_rviz': use_navigation_rviz
         }.items(),
         condition=UnlessCondition(LaunchConfiguration('use_keepout_zones')),
 
@@ -50,7 +50,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'use_description': use_description,
-            'use_navigation_rviz': use_navigation_rviz
+            'use_rviz': use_navigation_rviz
         }.items(),
         condition=IfCondition(LaunchConfiguration('use_keepout_zones')),
     )
