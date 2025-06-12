@@ -29,7 +29,7 @@ def generate_launch_description():
         )
 
     use_description = LaunchConfiguration("use_description")
-    use_rviz = LaunchConfiguration("use_rviz")
+    use_navigation_rviz = LaunchConfiguration("use_navigation_rviz")
 
     navigation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
