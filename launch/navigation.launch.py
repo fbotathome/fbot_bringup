@@ -15,6 +15,21 @@ def generate_launch_description():
             default_value='false',
             description='Parameter to include or not keepout zones on the navigation'
         )
+    
+    use_rviz_arg = DeclareLaunchArgument(
+            'use_rviz',
+            default_value='false',
+            description='Parameter to launch rviz or not'
+        )
+    
+    use_description_arg = DeclareLaunchArgument(
+            'use_description',
+            default_value='false',
+            description='Parameter to wether to use the robot description or not'
+        )
+
+    use_description = LaunchConfiguration("use_description")
+    use_rviz = LaunchConfiguration("use_rviz")
 
     navigation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -22,8 +37,8 @@ def generate_launch_description():
 
         ),
         launch_arguments={
-            'use_description': 'false',
-            'use_rviz': 'false'
+            'use_description': use_description,
+            'use_rviz': use_rviz
         }.items(),
         condition=UnlessCondition(LaunchConfiguration('use_keepout_zones')),
 
@@ -34,14 +49,16 @@ def generate_launch_description():
             os.path.join(get_package_share_directory("fbot_navigation"), 'launch', 'navigation_keepout.launch.py')
         ),
         launch_arguments={
-            'use_description': 'false',
-            'use_rviz': 'false'
+            'use_description': use_description,
+            'use_rviz': use_rviz
         }.items(),
         condition=IfCondition(LaunchConfiguration('use_keepout_zones')),
     )
 
     return LaunchDescription([
         use_keepout_arg,
+        use_rviz_arg,
+        use_description_arg,
         navigation,
         navigation_keepout
     ])
