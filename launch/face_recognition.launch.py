@@ -14,7 +14,7 @@ def generate_launch_description():
         
         ),
         launch_arguments={
-            'use_remote':'true'
+            'use_remote':'false',
             'use_realsense':'false'
         }.items()
     )
