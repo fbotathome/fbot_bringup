@@ -14,7 +14,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'vlm_api_type': 'ollama',
-            'vlm_api_model': 'gemma3:4b',
+            'vlm_api_model': 'llama3.2-vision',
             'vlm_api_host': 'http://192.168.0.106:11434'
         }.items()
     )
