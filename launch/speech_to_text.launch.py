@@ -9,8 +9,8 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     speech_to_text_arg = DeclareLaunchArgument(
-        'tts_config_file',
-        default_value='fbot_stt_recepcionist.yaml',
+        'stt_config_file',
+        default_value='fbot_stt_quiz.yaml',
         description="The configuration file for the speech to text challenge. "
     )
 
@@ -19,7 +19,7 @@ def generate_launch_description():
             os.path.join(get_package_share_directory("fbot_hri_bringup"), 'speech_to_text.launch.py')
         ),
         launch_arguments={
-            'tts_config_file': LaunchConfiguration('tts_config_file'),
+            'stt_config_file': LaunchConfiguration('stt_config_file'),
         }.items()
     )
 
