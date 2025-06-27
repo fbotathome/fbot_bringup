@@ -10,7 +10,7 @@ def generate_launch_description():
 
     speech_to_text_arg = DeclareLaunchArgument(
         'tts_config_file',
-        default_value='fbot_stt_quiz.yaml',
+        default_value='fbot_stt_recepcionist.yaml',
         description="The configuration file for the speech to text challenge. "
     )
 
