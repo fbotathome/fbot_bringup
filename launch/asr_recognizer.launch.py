@@ -9,13 +9,13 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     config_remote_arg = DeclareLaunchArgument(
         'use_remote',
-        default_value='true',
+        default_value='false',
         description="If should run the node on remote"
     )
 
     synthesizer_speech = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'asr_riva.launch.py')
+            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'riva_recognizer.launch.py')
         
         ),
         launch_arguments={
