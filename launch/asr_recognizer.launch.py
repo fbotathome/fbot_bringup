@@ -15,7 +15,7 @@ def generate_launch_description():
 
     synthesizer_speech = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'synthesizer_speech.launch.py')
+            os.path.join(get_package_share_directory("fbot_hri_bringup"), 'riva_recognizer.launch.py')
         
         ),
         launch_arguments={
