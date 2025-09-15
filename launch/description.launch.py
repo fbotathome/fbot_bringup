@@ -30,7 +30,14 @@ def generate_launch_description():
         }.items()
     )
 
+    joy = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory("joy2twist"), 'launch', 'gamepad_controller.launch.py')
+        )
+    )
+
     return LaunchDescription([
         *declared_arguments,
         description,
+        joy
     ])
