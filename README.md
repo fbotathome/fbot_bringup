@@ -60,17 +60,10 @@ source install/setup.bash
 
 ## Usage
 
-Examples assume workspace sourced.
-
-Launch camera (Realsense optional):
-```bash
-# default use_realsense is false; enable with argument
-ros2 launch fbot_bringup camera.launch.py use_realsense:=true
-```
-
 Common subsystem launches:
 ```bash
 ros2 launch fbot_bringup vision.launch.py
+ros2 launch fbot_bringup camera.launch.py use_realsense:=true
 ros2 launch fbot_bringup world.launch.py
 ros2 launch fbot_bringup face_recognition.launch.py
 ros2 launch fbot_bringup hotword_detector.launch.py
