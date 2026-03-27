@@ -9,7 +9,7 @@ from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 
 def validate_camera_config(context):
-    if context.launch_configurations.get('use_realsense', 'false') == 'false':
+    if context.launch_configurations.get('use_realsense', 'false') == 'false' and context.launch_configurations.get('use_femtobolt', 'false') == 'false':
         raise Exception("All the camera nodes are disabled. Please enable at least one camera node.")
 
 def generate_launch_description():
@@ -40,8 +40,25 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_realsense'))
     )
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'use_femtobolt',
+            default_value='false',
+            description='If should launch the femtobolt'
+        )
+    )
+
+    femtobolt2_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('orbbec_camera'), 'launch', 'femto_bolt.launch.py')
+        ),
+        launch_arguments={},
+        condition=IfCondition(LaunchConfiguration('use_femtobolt'))
+    )
+
     return LaunchDescription([
         *declared_arguments,
         OpaqueFunction(function=validate_camera_config),
         realsense2_node,
+        femtobolt2_node,
     ])
