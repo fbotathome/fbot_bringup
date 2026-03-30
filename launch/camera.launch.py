@@ -52,7 +52,25 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('orbbec_camera'), 'launch', 'femto_bolt.launch.py')
         ),
-        launch_arguments={},
+        launch_arguments={
+            'camera_namespace': 'fbot_vision',
+            'camera_name': 'camera'
+            'enable_color': 'true',
+            'enable_depth': 'true',
+            'enable_ir': 'true',
+            'color_width': '1280',
+            'color_height': '720',
+            'color_fps': '30',
+            'depth_width': '640',
+            'depth_height': '576',
+            'depth_fps': '30',
+            'depth_registration': 'true',
+            'align_mode': 'SW',
+            'align_target_stream': 'COLOR',
+            'enable_frame_sync': 'true',
+            'enable_point_cloud': 'true',
+            'enable_colored_point_cloud': 'true',
+        }.items(),
         condition=IfCondition(LaunchConfiguration('use_femtobolt'))
     )
 
