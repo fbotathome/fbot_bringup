@@ -68,7 +68,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         launch_realsense_arg,
-        launch_femtobolt_arg
+        launch_femtobolt_arg,
         config_remote_arg,
         config_file_arg,
         config_file_remote_arg,
