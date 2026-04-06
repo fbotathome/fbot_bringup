@@ -29,7 +29,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'camera_namespace': 'fbot_vision',
-            'camera_name': 'camera',
+            'camera_name': 'realsense',
             'enable_rgbd': 'true',
             'enable_sync': 'true',
             'align_depth.enable': 'true',
@@ -54,7 +54,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'camera_namespace': 'fbot_vision',
-            'camera_name': 'camera',
+            'camera_name': 'femtobolt',
             'enable_color': 'true',
             'enable_depth': 'true',
             'enable_ir': 'true',
