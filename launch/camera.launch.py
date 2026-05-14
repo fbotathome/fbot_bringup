@@ -9,7 +9,7 @@ from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 
 def validate_camera_config(context):
-    if context.launch_configurations.get('use_realsense', 'false') == 'false' and context.launch_configurations.get('use_femtobolt', 'false') == 'false':
+    if context.launch_configurations.get('validate_config', 'true') == 'true' and context.launch_configurations.get('use_realsense', 'false') == 'false' and context.launch_configurations.get('use_femtobolt', 'false') == 'false':
         raise Exception("All the camera nodes are disabled. Please enable at least one camera node.")
 
 def generate_launch_description():
@@ -65,6 +65,14 @@ def generate_launch_description():
             'enable_colored_point_cloud': 'true',
         }.items(),
         condition=IfCondition(LaunchConfiguration('use_femtobolt'))
+    )
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'validate_config',
+            default_value='true',
+            description='If should validate the camera configuration (at least one camera should be enabled)'
+        )
     )
 
     return LaunchDescription([
