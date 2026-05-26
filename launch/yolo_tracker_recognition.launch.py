@@ -42,7 +42,13 @@ def generate_launch_description():
     launch_realsense_arg = DeclareLaunchArgument(
         'use_realsense',
         default_value='false',
-        description="If should launch the camera node"
+        description="If should launch the realsense node"
+    )
+
+    launch_femtobolt_arg = DeclareLaunchArgument(
+        'use_femtobolt',
+        default_value='false',
+        description="If should launch the femtobolt node"
     )
 
     yolov_tracker_recognition = IncludeLaunchDescription(
@@ -52,6 +58,7 @@ def generate_launch_description():
         launch_arguments={
             'use_remote': LaunchConfiguration("use_remote"),
             'use_realsense': LaunchConfiguration('use_realsense'),
+            'use_femtobolt': LaunchConfiguration('use_femtobolt'),
             'remote_config':LaunchConfiguration("remote_config"),
             "config": LaunchConfiguration("config")
         }.items()
@@ -59,6 +66,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         launch_realsense_arg,
+        launch_femtobolt_arg,
         config_remote_arg,
         config_file_arg,
         config_file_remote_arg,

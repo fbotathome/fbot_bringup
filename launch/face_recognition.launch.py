@@ -16,6 +16,7 @@ def generate_launch_description():
         launch_arguments={
             'use_remote':'false',
             'use_realsense':'false'
+            'use_femtobolt':'false'
         }.items()
     )
 
