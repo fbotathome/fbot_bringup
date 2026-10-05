@@ -42,7 +42,7 @@ def generate_launch_description():
 
     declared = [
         DeclareLaunchArgument('base_version', default_value='v1',
-                              description='Shark base version (shark_description/config/<v>.yaml)'),
+                              description='Shark base version (fbot_description/config/base/<v>.yaml)'),
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
         DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),
         DeclareLaunchArgument('use_sick', default_value='false', description='Sick LMS (publishes /scan)'),
@@ -76,7 +76,6 @@ def generate_launch_description():
         'use_keepout_zones': lc('use_keepout_zones'),
         'map_file': lc('map_file'),
         'use_navigation_rviz': lc('use_navigation_rviz'),
-        'with_robot_support': 'false',   # robot.launch.py already starts sensors + EKF
     })
     neck = include('neck.launch.py', condition=IfCondition(lc('use_neck')))
     arm = include('arm.launch.py', condition=IfCondition(lc('use_arm')))

@@ -73,12 +73,12 @@ ros2 launch fbot_bringup robot.launch.py use_arm:=true                     # opt
 |--------|--------|
 | `robot.launch.py` | everything below, selected with `use_*` flags |
 | `base.launch.py` | `robot_state_publisher`, `ros2_control` (hoverboard), diff-drive controller. Run alone for a drive test |
-| `sensors.launch.py` | two Hokuyo lasers (`/scan2`, `/scan3`), BNO055 IMU, optional Sick (`/scan`) |
+| `sensors.launch.py` | two Hokuyo lasers (`/scan2`, `/scan3`), BNO055 IMU, optional Sick (`/scan`, `sick.launch.py`) |
 | `localization.launch.py` | EKF, owner of `odom -> base_footprint` |
 | `navigation.launch.py` | Nav2 (AMCL + map) or SLAM, nav only |
 | `neck.launch.py` / `arm.launch.py` | neck + face / Interbotix arm |
 
-Model, geometry and parameter locations are described in `fbot_description/README.md`. `description.launch.py` and `interbotix_arm.launch.py` are deprecated aliases kept until all tasks are migrated.
+Model, geometry and parameter locations are described in `fbot_description/README.md`. The old `description.launch.py` and `interbotix_arm.launch.py` were removed: use `robot.launch.py` (and `use_arm:=true`).
 
 ---
 
@@ -93,7 +93,7 @@ ros2 launch fbot_bringup face_recognition.launch.py
 ros2 launch fbot_bringup hotword_detector.launch.py
 ros2 launch fbot_bringup riva_speech_to_text.launch.py
 ros2 launch fbot_bringup synthesizer_speech.launch.py
-ros2 launch fbot_bringup interbotix_arm.launch.py
+ros2 launch fbot_bringup arm.launch.py            # optional Interbotix arm
 ```
 
 Notes

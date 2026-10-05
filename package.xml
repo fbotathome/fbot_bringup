@@ -12,9 +12,6 @@
        bringup still builds on a laptop without the hardware stack:
        fbot_head (neck_controller) and hoverboard_driver (ros2_control plugin). -->
   <exec_depend>fbot_description</exec_depend>
-  <exec_depend>shark_description</exec_depend>
-  <exec_depend>sensors_description</exec_depend>
-  <exec_depend>boris_head_description</exec_depend>
   <exec_depend>fbot_navigation</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>
@@ -26,6 +23,7 @@
   <exec_depend>urg_node</exec_depend>
   <exec_depend>bno055</exec_depend>
   <exec_depend>nav2_common</exec_depend>
+  <exec_depend>sick_scan_xd</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

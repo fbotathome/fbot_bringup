@@ -7,5 +7,5 @@ In the skill, yaml call, the namespace must be parametrized inside 'parameters' 
 Robot body rules:
 The robot (description, base, sensors, EKF, navigation, neck, arm) is started ONLY by robot.launch.py;
 task launches include it once and never include description / navigation / neck launches separately;
-geometry (wheel radius, separation, base size) lives only in shark_description/config/<base_version>.yaml;
+geometry (wheel radius, separation, base size) lives only in fbot_description/config/base/<base_version>.yaml;
 the arm is optional (use_arm) and must not be required by any other launch.

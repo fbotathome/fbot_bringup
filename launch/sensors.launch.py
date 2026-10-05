@@ -47,7 +47,7 @@ def generate_launch_description():
 
     sick = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('sensors_description'), 'launch', 'sick_lms_1xx.launch.py')
+            os.path.join(get_package_share_directory('fbot_bringup'), 'launch', 'sick.launch.py')
         ),
         condition=IfCondition(use_sick),
     )
