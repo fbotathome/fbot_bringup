@@ -58,6 +58,30 @@ source install/setup.bash
 
 ---
 
+## Robot body: `robot.launch.py`
+
+The robot (description, base, lasers, IMU, EKF, optional navigation / neck / arm) is started by **one** launch. Task launches in `fbot_behavior` include it once, followed by their skill launches.
+
+```bash
+ros2 launch fbot_bringup robot.launch.py                                   # base + lasers + IMU + EKF
+ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml use_neck:=true
+ros2 launch fbot_bringup robot.launch.py base_version:=v2                  # new Shark base
+ros2 launch fbot_bringup robot.launch.py use_arm:=true                     # optional Interbotix arm
+```
+
+| Launch | Starts |
+|--------|--------|
+| `robot.launch.py` | everything below, selected with `use_*` flags |
+| `base.launch.py` | `robot_state_publisher`, `ros2_control` (hoverboard), diff-drive controller. Run alone for a drive test |
+| `sensors.launch.py` | two Hokuyo lasers (`/scan2`, `/scan3`), BNO055 IMU, optional Sick (`/scan`) |
+| `localization.launch.py` | EKF, owner of `odom -> base_footprint` |
+| `navigation.launch.py` | Nav2 (AMCL + map) or SLAM, nav only |
+| `neck.launch.py` / `arm.launch.py` | neck + face / Interbotix arm |
+
+Model, geometry and parameter locations are described in `fbot_description/README.md`. `description.launch.py` and `interbotix_arm.launch.py` are deprecated aliases kept until all tasks are migrated.
+
+---
+
 ## Usage
 
 Common subsystem launches:

@@ -3,3 +3,9 @@ All skills launches must be named <skill>.launch.py;
 In the skill launch the name must be parametrized;
 In the skill, yaml call, the name must be parametrized inside 'parameters' field;
 In the skill, yaml call, the namespace must be parametrized inside 'parameters' field.
+
+Robot body rules:
+The robot (description, base, sensors, EKF, navigation, neck, arm) is started ONLY by robot.launch.py;
+task launches include it once and never include description / navigation / neck launches separately;
+geometry (wheel radius, separation, base size) lives only in shark_description/config/<base_version>.yaml;
+the arm is optional (use_arm) and must not be required by any other launch.
