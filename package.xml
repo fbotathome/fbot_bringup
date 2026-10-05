@@ -7,14 +7,15 @@
   <maintainer email="jfsslemos@gmail.com">jota</maintainer>
   <license>TODO: License declaration</license>
 
-  <!-- robot body (robot.launch.py and the launches it includes) -->
+  <!-- robot body (robot.launch.py and the launches it includes).
+       Also needed at runtime ON THE ROBOT but intentionally not declared here, so
+       bringup still builds on a laptop without the hardware stack:
+       fbot_head (neck_controller) and hoverboard_driver (ros2_control plugin). -->
   <exec_depend>fbot_description</exec_depend>
   <exec_depend>shark_description</exec_depend>
   <exec_depend>sensors_description</exec_depend>
   <exec_depend>boris_head_description</exec_depend>
   <exec_depend>fbot_navigation</exec_depend>
-  <exec_depend>fbot_head</exec_depend>
-  <exec_depend>hoverboard_driver</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
