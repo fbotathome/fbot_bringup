@@ -7,6 +7,26 @@
   <maintainer email="jfsslemos@gmail.com">jota</maintainer>
   <license>TODO: License declaration</license>
 
+  <!-- robot body (robot.launch.py and the launches it includes) -->
+  <exec_depend>fbot_description</exec_depend>
+  <exec_depend>shark_description</exec_depend>
+  <exec_depend>sensors_description</exec_depend>
+  <exec_depend>boris_head_description</exec_depend>
+  <exec_depend>fbot_navigation</exec_depend>
+  <exec_depend>fbot_head</exec_depend>
+  <exec_depend>hoverboard_driver</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
+  <exec_depend>urg_node</exec_depend>
+  <exec_depend>bno055</exec_depend>
+  <exec_depend>nav2_common</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>

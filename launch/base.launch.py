@@ -1,0 +1,140 @@
+"""Robot base: robot_description + ros2_control (hoverboard) + diff drive controller.
+
+Normally included by robot.launch.py. Run it alone to test the base only:
+
+  ros2 launch fbot_bringup base.launch.py
+  ros2 launch fbot_bringup base.launch.py base_version:=v2 use_neck:=false
+
+Geometry (wheel radius / separation) comes ONLY from
+shark_description/config/<base_version>.yaml. It is merged into the controller
+parameters here, so boris_controllers.yaml does not contain it.
+
+Topics: /cmd_vel (in), /odom (out), /joint_states (merged, single publisher).
+"""
+import os
+import tempfile
+
+import yaml
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, RegisterEventHandler
+from launch.event_handlers import OnProcessExit
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
+
+
+def _merged_controller_params(base_version: str) -> str:
+    """boris_controllers.yaml + wheel geometry of the selected base -> temp yaml path."""
+    shark_cfg_path = os.path.join(get_package_share_directory('shark_description'), 'config', f'{base_version}.yaml')
+    if not os.path.isfile(shark_cfg_path):
+        raise RuntimeError(f"Unknown base_version '{base_version}': {shark_cfg_path} does not exist")
+    with open(shark_cfg_path) as f:
+        shark = yaml.safe_load(f)
+
+    ctrl_path = os.path.join(get_package_share_directory('fbot_description'), 'config', 'boris_controllers.yaml')
+    with open(ctrl_path) as f:
+        params = yaml.safe_load(f)
+
+    controller = params['hoverboard_base_controller']['ros__parameters']
+    controller['wheel_radius'] = float(shark['wheel']['radius'])
+    controller['wheel_separation'] = float(shark['wheel']['separation'])
+
+    out = tempfile.NamedTemporaryFile('w', prefix=f'fbot_controllers_{base_version}_', suffix='.yaml', delete=False)
+    yaml.safe_dump(params, out)
+    out.close()
+    return out.name
+
+
+def _launch_setup(context, *args, **kwargs):
+    base_version = LaunchConfiguration('base_version').perform(context)
+    controllers_file = _merged_controller_params(base_version)
+
+    robot_description = {
+        'robot_description': ParameterValue(
+            Command([
+                PathJoinSubstitution([FindExecutable(name='xacro')]), ' ',
+                PathJoinSubstitution([FindPackageShare('fbot_description'), 'urdf', 'boris.urdf.xacro']),
+                ' base_version:=', LaunchConfiguration('base_version'),
+                ' use_neck:=', LaunchConfiguration('use_neck'),
+                ' use_arm_mount:=', LaunchConfiguration('use_arm_mount'),
+                ' arm_z_position:=', LaunchConfiguration('arm_z_position'),
+            ]),
+            value_type=str,
+        )
+    }
+
+    control_node = Node(
+        package='controller_manager',
+        executable='ros2_control_node',
+        parameters=[robot_description, controllers_file],
+        output='both',
+        remappings=[
+            ('/hoverboard_base_controller/cmd_vel_unstamped', '/cmd_vel'),
+            ('/hoverboard_base_controller/odom', '/odom'),
+            ('~/robot_description', '/robot_description'),
+            # joint_state_broadcaster -> its own topic; joint_state_publisher is the
+            # only publisher of /joint_states (merges wheels + neck).
+            ('/joint_states', '/joint_state_broadcaster/joint_states'),
+        ],
+    )
+
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='both',
+        parameters=[robot_description],
+    )
+
+    joint_state_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        output='both',
+        parameters=[{
+            'source_list': ['/joint_state_broadcaster/joint_states', '/boris_head/joint_states'],
+        }],
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+    )
+
+    base_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['hoverboard_base_controller', '--controller-manager', '/controller_manager'],
+    )
+
+    # start the base controller only after the broadcaster is up
+    delay_base_controller = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[base_controller_spawner],
+        )
+    )
+
+    return [
+        control_node,
+        robot_state_publisher,
+        joint_state_publisher,
+        joint_state_broadcaster_spawner,
+        delay_base_controller,
+    ]
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        DeclareLaunchArgument('base_version', default_value='v1',
+                              description='Shark base version: shark_description/config/<base_version>.yaml'),
+        DeclareLaunchArgument('use_neck', default_value='true',
+                              description='Include the neck + camera mount in the robot description'),
+        DeclareLaunchArgument('use_arm_mount', default_value='false',
+                              description='Include the empty arm mounting plate in the description'),
+        DeclareLaunchArgument('arm_z_position', default_value='0.34',
+                              description='Height of the arm plate on the torso [m]'),
+        OpaqueFunction(function=_launch_setup),
+    ])
