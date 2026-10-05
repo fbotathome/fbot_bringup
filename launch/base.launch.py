@@ -30,6 +30,12 @@ from launch_ros.substitutions import FindPackageShare
 
 
 BASE_NS = 'base'
+HOVERBOARD_TOPICS = [
+    'emergency_button',
+    'hoverboard/connected',
+    'hoverboard/battery_voltage',
+    'hoverboard/temperature',
+] + [f'hoverboard/{side}_wheel/{field}' for side in ('left', 'right') for field in ('velocity', 'position', 'cmd')]
 CONTROLLER_MANAGER = f'/{BASE_NS}/controller_manager'
 
 
@@ -87,6 +93,9 @@ def _launch_setup(context, *args, **kwargs):
             (f'/{BASE_NS}/hoverboard_base_controller/cmd_vel_unstamped', '/cmd_vel'),
             (f'/{BASE_NS}/hoverboard_base_controller/odom', '/odom'),
             ('~/robot_description', '/robot_description'),
+            # the hoverboard_driver plugin publishes its own status topics; keep them in the
+            # root namespace (neck_controller listens to /emergency_button)
+            *[(f'/{BASE_NS}/{t}', f'/{t}') for t in HOVERBOARD_TOPICS],
             # joint_state_broadcaster publishes /base/joint_states; the BORIS
             # joint_state_publisher below merges it with the neck into /joint_states.
         ],
