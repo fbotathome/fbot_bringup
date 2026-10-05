@@ -1,7 +1,7 @@
 """Navigation sensors: two Hokuyo lasers + BNO055 IMU (+ optional Sick LMS).
 
   ros2 launch fbot_bringup sensors.launch.py
-  ros2 launch fbot_bringup sensors.launch.py imu_port:=/dev/sensors/imu use_imu:=false
+  ros2 launch fbot_bringup sensors.launch.py use_lasers:=false            # IMU only, on /dev/ttyIMU
 
 Topics: /scan2 (ground Hokuyo), /scan3 (back Hokuyo), /bno055/imu.
 /scan is only published by the Sick LMS (use_sick:=true); AMCL and slam_toolbox
@@ -56,8 +56,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_lasers', default_value='true', description='Start the two Hokuyo lasers'),
         DeclareLaunchArgument('use_imu', default_value='true', description='Start the BNO055 IMU'),
         DeclareLaunchArgument('use_sick', default_value='false', description='Start the Sick LMS (publishes /scan)'),
-        DeclareLaunchArgument('imu_port', default_value='/dev/ttyUSB2',
-                              description='IMU serial port (prefer a udev symlink)'),
+        DeclareLaunchArgument('imu_port', default_value='/dev/ttyIMU',
+                              description='IMU serial port (udev symlink, see /etc/udev/rules.d)'),
         urg_ground,
         urg_back,
         imu,

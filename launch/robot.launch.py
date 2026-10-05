@@ -47,7 +47,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
         DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),
         DeclareLaunchArgument('use_sick', default_value='false', description='Sick LMS (publishes /scan)'),
-        DeclareLaunchArgument('imu_port', default_value='/dev/ttyUSB2', description='IMU serial port'),
+        DeclareLaunchArgument('imu_port', default_value='/dev/ttyIMU', description='IMU serial port (udev symlink)'),
         DeclareLaunchArgument('use_localization', default_value='true', description='EKF (odom -> base_footprint)'),
         DeclareLaunchArgument('use_navigation', default_value='false', description='Nav2 (or SLAM with use_slam)'),
         DeclareLaunchArgument('use_slam', default_value='false', description='slam_toolbox instead of AMCL + map'),
