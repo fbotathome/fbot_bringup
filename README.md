@@ -60,13 +60,19 @@ source install/setup.bash
 
 ## Robot body: `robot.launch.py`
 
-The robot (description, base, lasers, IMU, EKF, optional navigation / neck / arm) is started by **one** launch. Task launches in `fbot_behavior` include it once, followed by their skill launches.
+The robot (description, base, lasers, IMU, EKF, optional navigation / neck) is started by **one** launch. A task launch in `fbot_behavior` is:
+
+```
+robot.launch.py            once, with flags (use_navigation, map_file, use_neck, ...)
+manipulator.launch.py      only if the task uses the arm
+<skill launches>           camera, vision, speech, ...
+```
 
 ```bash
 ros2 launch fbot_bringup robot.launch.py                                   # base + lasers + IMU + EKF
 ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml use_neck:=true
 ros2 launch fbot_bringup robot.launch.py base_version:=v2                  # new Shark base
-ros2 launch fbot_bringup robot.launch.py use_arm:=true                     # optional Interbotix arm
+ros2 launch fbot_bringup manipulator.launch.py                             # the arm (xArm6), next to robot.launch.py
 ```
 
 | Launch | Starts |
@@ -76,9 +82,10 @@ ros2 launch fbot_bringup robot.launch.py use_arm:=true                     # opt
 | `sensors.launch.py` | two Hokuyo lasers (`/scan2`, `/scan3`), BNO055 IMU, optional Sick (`/scan`, `sick.launch.py`) |
 | `localization.launch.py` | EKF, owner of `odom -> base_footprint` |
 | `navigation.launch.py` | Nav2 (AMCL + map) or SLAM, nav only |
-| `neck.launch.py` / `arm.launch.py` | neck + face / Interbotix arm |
+| `neck.launch.py` | neck controller + face |
+| `manipulator.launch.py` | arm: MoveIt + driver + `fbot_manipulator` (`arm_type` xarm6 / wx200, `xarm_fake`, `robot_ip`), attached to `arm_mount_link` (`mount_xyz`, `mount_rpy`). Included by tasks, not by `robot.launch.py` |
 
-Model, geometry and parameter locations are described in `fbot_description/README.md`. The old `description.launch.py` and `interbotix_arm.launch.py` were removed: use `robot.launch.py` (and `use_arm:=true`).
+Model, geometry and parameter locations are described in `fbot_description/README.md`. The old `description.launch.py` and `interbotix_arm.launch.py` were removed: use `robot.launch.py` (+ `manipulator.launch.py` for the arm).
 
 ---
 
@@ -93,7 +100,7 @@ ros2 launch fbot_bringup face_recognition.launch.py
 ros2 launch fbot_bringup hotword_detector.launch.py
 ros2 launch fbot_bringup riva_speech_to_text.launch.py
 ros2 launch fbot_bringup synthesizer_speech.launch.py
-ros2 launch fbot_bringup arm.launch.py            # optional Interbotix arm
+ros2 launch fbot_bringup manipulator.launch.py arm_type:=wx200   # Interbotix arm (option)
 ```
 
 Notes

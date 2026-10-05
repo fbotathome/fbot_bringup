@@ -9,7 +9,11 @@ Geometry (wheel radius / separation) comes ONLY from
 fbot_description/config/base/<base_version>.yaml. It is merged into the controller
 parameters here, so boris_controllers.yaml does not contain it.
 
-Topics: /cmd_vel (in), /odom (out), /joint_states (merged, single publisher).
+Topics: /cmd_vel (in), /odom (out), /joint_states (BORIS joints: wheels + neck).
+
+Everything ros2_control-related runs in the `base` namespace
+(/base/controller_manager, /base/hoverboard_base_controller, /base/joint_states) so
+it can run next to the arm's own controller manager (manipulator.launch.py).
 """
 import os
 import tempfile
@@ -23,6 +27,10 @@ from launch.substitutions import Command, FindExecutable, LaunchConfiguration, P
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+
+
+BASE_NS = 'base'
+CONTROLLER_MANAGER = f'/{BASE_NS}/controller_manager'
 
 
 def _merged_controller_params(base_version: str) -> str:
@@ -41,6 +49,9 @@ def _merged_controller_params(base_version: str) -> str:
     controller = params['hoverboard_base_controller']['ros__parameters']
     controller['wheel_radius'] = float(base['wheel']['radius'])
     controller['wheel_separation'] = float(base['wheel']['separation'])
+
+    # the controller manager runs in the `base` namespace: use fully-qualified node names
+    params = {f'/{BASE_NS}/{node}': value for node, value in params.items()}
 
     out = tempfile.NamedTemporaryFile('w', prefix=f'fbot_controllers_{base_version}_', suffix='.yaml', delete=False)
     yaml.safe_dump(params, out)
@@ -69,15 +80,15 @@ def _launch_setup(context, *args, **kwargs):
     control_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
+        namespace=BASE_NS,
         parameters=[robot_description, controllers_file],
         output='both',
         remappings=[
-            ('/hoverboard_base_controller/cmd_vel_unstamped', '/cmd_vel'),
-            ('/hoverboard_base_controller/odom', '/odom'),
+            (f'/{BASE_NS}/hoverboard_base_controller/cmd_vel_unstamped', '/cmd_vel'),
+            (f'/{BASE_NS}/hoverboard_base_controller/odom', '/odom'),
             ('~/robot_description', '/robot_description'),
-            # joint_state_broadcaster -> its own topic; joint_state_publisher is the
-            # only publisher of /joint_states (merges wheels + neck).
-            ('/joint_states', '/joint_state_broadcaster/joint_states'),
+            # joint_state_broadcaster publishes /base/joint_states; the BORIS
+            # joint_state_publisher below merges it with the neck into /joint_states.
         ],
     )
 
@@ -91,23 +102,23 @@ def _launch_setup(context, *args, **kwargs):
     joint_state_publisher = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
-        name='joint_state_publisher',
+        name='boris_joint_state_publisher',   # the arm stack has its own joint_state_publisher
         output='both',
         parameters=[{
-            'source_list': ['/joint_state_broadcaster/joint_states', '/boris_head/joint_states'],
+            'source_list': [f'/{BASE_NS}/joint_states', '/boris_head/joint_states'],
         }],
     )
 
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        arguments=['joint_state_broadcaster', '--controller-manager', CONTROLLER_MANAGER],
     )
 
     base_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['hoverboard_base_controller', '--controller-manager', '/controller_manager'],
+        arguments=['hoverboard_base_controller', '--controller-manager', CONTROLLER_MANAGER],
     )
 
     # start the base controller only after the broadcaster is up
@@ -133,9 +144,9 @@ def generate_launch_description():
                               description='Shark base version: fbot_description/config/base/<base_version>.yaml'),
         DeclareLaunchArgument('use_neck', default_value='true',
                               description='Include the neck + camera mount in the robot description'),
-        DeclareLaunchArgument('use_arm_mount', default_value='false',
+        DeclareLaunchArgument('use_arm_mount', default_value='true',
                               description='Include the empty arm mounting plate in the description'),
-        DeclareLaunchArgument('arm_z_position', default_value='0.34',
+        DeclareLaunchArgument('arm_z_position', default_value='0.315',
                               description='Height of the arm plate on the torso [m]'),
         OpaqueFunction(function=_launch_setup),
     ])

@@ -4,19 +4,20 @@
   ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
   ros2 launch fbot_bringup robot.launch.py use_neck:=true use_navigation:=true
   ros2 launch fbot_bringup robot.launch.py base_version:=v2         # new Shark base
-  ros2 launch fbot_bringup robot.launch.py use_arm:=true            # wx200 (optional)
   ros2 launch fbot_bringup robot.launch.py use_slam:=true use_navigation:=true   # map while driving
 
-Task launches (fbot_behavior) should include this ONCE instead of separate
-description / navigation / neck launches.
+Task launches (fbot_behavior) include this ONCE (instead of separate description /
+navigation / neck launches), plus manipulator.launch.py when they use the arm.
 
   robot.launch.py
    |- base.launch.py          description + ros2_control (hoverboard) + diff drive
    |- sensors.launch.py       Hokuyo x2, IMU            (use_lasers, use_imu, use_sick)
    |- localization.launch.py  EKF                       (use_localization)
    |- navigation.launch.py    Nav2 / SLAM               (use_navigation, use_slam)
-   |- neck.launch.py          neck_controller + face    (use_neck)
-   '- arm.launch.py           Interbotix arm            (use_arm)
+   '- neck.launch.py          neck_controller + face    (use_neck)
+
+The arm is NOT started here: tasks include manipulator.launch.py, which attaches
+it to arm_mount_link (present by default, use_arm_mount).
 """
 import os
 
@@ -54,14 +55,15 @@ def generate_launch_description():
         DeclareLaunchArgument('map_file', default_value='lab_2026_2.yaml', description='Map in fbot_navigation/maps'),
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='RViz2 with the nav config'),
         DeclareLaunchArgument('use_neck', default_value='false', description='Neck controller, face + neck in the URDF'),
-        DeclareLaunchArgument('use_arm', default_value='false', description='Interbotix arm (adds the arm plate to the URDF)'),
-        DeclareLaunchArgument('arm_z_position', default_value='0.34', description='Arm plate height on the torso [m]'),
+        DeclareLaunchArgument('use_arm_mount', default_value='true',
+                              description='Arm mounting plate in the URDF (parent of the arm, see manipulator.launch.py)'),
+        DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),
     ]
 
     base = include('base.launch.py', args={
         'base_version': lc('base_version'),
         'use_neck': lc('use_neck'),
-        'use_arm_mount': lc('use_arm'),
+        'use_arm_mount': lc('use_arm_mount'),
         'arm_z_position': lc('arm_z_position'),
     })
     sensors = include('sensors.launch.py', args={
@@ -78,6 +80,5 @@ def generate_launch_description():
         'use_navigation_rviz': lc('use_navigation_rviz'),
     })
     neck = include('neck.launch.py', condition=IfCondition(lc('use_neck')))
-    arm = include('arm.launch.py', condition=IfCondition(lc('use_arm')))
 
-    return LaunchDescription(declared + [base, sensors, localization, navigation, neck, arm])
+    return LaunchDescription(declared + [base, sensors, localization, navigation, neck])
