@@ -5,6 +5,7 @@
   ros2 launch fbot_bringup robot.launch.py use_neck:=true use_navigation:=true
   ros2 launch fbot_bringup robot.launch.py base_version:=v2         # new Shark base
   ros2 launch fbot_bringup robot.launch.py use_slam:=true use_navigation:=true   # map while driving
+  ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
 
 Task launches (fbot_behavior) include this ONCE (instead of separate description /
 navigation / neck launches), plus manipulator.launch.py when they use the arm.
@@ -14,6 +15,7 @@ navigation / neck launches), plus manipulator.launch.py when they use the arm.
    |- sensors.launch.py       Hokuyo x2, IMU            (use_lasers, use_imu, use_sick)
    |- localization.launch.py  EKF                       (use_localization)
    |- navigation.launch.py    Nav2 / SLAM               (use_navigation, use_slam)
+   |- scan_watchdog           warns if /scan is missing  (use_navigation + use_scan_watchdog)
    '- neck.launch.py          neck_controller + face    (use_neck)
 
 The arm is NOT started here: tasks include manipulator.launch.py, which attaches
@@ -26,7 +28,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -54,6 +57,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_keepout_zones', default_value='false', description='Keepout zone filter'),
         DeclareLaunchArgument('map_file', default_value='lab_2026_2.yaml', description='Map in fbot_navigation/maps'),
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='RViz2 with the nav config'),
+        DeclareLaunchArgument('use_scan_watchdog', default_value='true',
+                              description='With navigation: banner when /scan (Sick) is missing or the robot is not localized'),
         DeclareLaunchArgument('use_neck', default_value='false', description='Neck controller, face + neck in the URDF'),
         DeclareLaunchArgument('use_arm_mount', default_value='true',
                               description='Arm mounting plate in the URDF (parent of the arm, see manipulator.launch.py)'),
@@ -80,5 +85,11 @@ def generate_launch_description():
         'use_navigation_rviz': lc('use_navigation_rviz'),
     })
     neck = include('neck.launch.py', condition=IfCondition(lc('use_neck')))
+    scan_watchdog = Node(
+        package='fbot_bringup', executable='scan_watchdog', output='screen',
+        condition=IfCondition(PythonExpression([
+            "'", lc('use_navigation'), "'.lower() == 'true' and '", lc('use_scan_watchdog'), "'.lower() == 'true'",
+        ])),
+    )
 
-    return LaunchDescription(declared + [base, sensors, localization, navigation, neck])
+    return LaunchDescription(declared + [base, sensors, localization, navigation, neck, scan_watchdog])
