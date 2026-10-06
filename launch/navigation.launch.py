@@ -63,6 +63,6 @@ def generate_launch_description():
         DeclareLaunchArgument('use_keepout_zones', default_value='false', description='Enable keepout zone filter'),
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='Start RViz2 with the nav config'),
         DeclareLaunchArgument('use_sim_time', default_value='false'),
-        DeclareLaunchArgument('robot_version', default_value='v1', description='BORIS version (footprint source)'),
+        DeclareLaunchArgument('robot_version', default_value='v2', description='BORIS version (footprint source)'),
         OpaqueFunction(function=_launch_setup),
     ])

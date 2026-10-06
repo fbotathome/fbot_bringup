@@ -3,7 +3,7 @@
   ros2 launch fbot_bringup robot.launch.py                          # base + lasers + IMU + EKF
   ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
   ros2 launch fbot_bringup robot.launch.py use_neck:=true use_navigation:=true
-  ros2 launch fbot_bringup robot.launch.py robot_version:=v2        # BORIS v2
+  ros2 launch fbot_bringup robot.launch.py robot_version:=v1        # old BORIS (v2 is the default)
   ros2 launch fbot_bringup robot.launch.py use_slam:=true use_navigation:=true   # map while driving
   ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
 
@@ -45,7 +45,7 @@ def generate_launch_description():
     lc = LaunchConfiguration
 
     declared = [
-        DeclareLaunchArgument('robot_version', default_value='v1',
+        DeclareLaunchArgument('robot_version', default_value='v2',
                               description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
         DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),

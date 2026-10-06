@@ -3,7 +3,7 @@
 Normally included by robot.launch.py. Run it alone to test the base only:
 
   ros2 launch fbot_bringup base.launch.py
-  ros2 launch fbot_bringup base.launch.py robot_version:=v2 use_neck:=false
+  ros2 launch fbot_bringup base.launch.py robot_version:=v1 use_neck:=false
 
 Geometry (wheel radius / separation) comes ONLY from
 fbot_description/config/robot/<robot_version>.yaml. It is merged into the controller
@@ -149,7 +149,7 @@ def _launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     return LaunchDescription([
-        DeclareLaunchArgument('robot_version', default_value='v1',
+        DeclareLaunchArgument('robot_version', default_value='v2',
                               description='BORIS version: fbot_description/config/robot/<robot_version>.yaml'),
         DeclareLaunchArgument('use_neck', default_value='true',
                               description='Include the neck + camera mount in the robot description'),
