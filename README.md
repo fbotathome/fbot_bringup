@@ -58,34 +58,34 @@ source install/setup.bash
 
 ---
 
-## Robot body: `robot.launch.py`
+## Robot body: `boris.launch.py`
 
 The robot (description, base, lasers, IMU, EKF, optional navigation / neck) is started by **one** launch. A task launch in `fbot_behavior` is:
 
 ```
-robot.launch.py            once, with flags (use_navigation, map_file, use_neck, ...)
+boris.launch.py            once, with flags (use_navigation, map_file, use_neck, ...)
 manipulator.launch.py      only if the task uses the arm
 <skill launches>           camera, vision, speech, ...
 ```
 
 ```bash
-ros2 launch fbot_bringup robot.launch.py                                   # base + lasers + IMU + EKF
-ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml use_neck:=true
-ros2 launch fbot_bringup robot.launch.py robot_version:=v1                 # old BORIS (v2 is the default)
-ros2 launch fbot_bringup manipulator.launch.py                             # the arm (xArm6), next to robot.launch.py
+ros2 launch fbot_bringup boris.launch.py                                   # base + lasers + IMU + EKF
+ros2 launch fbot_bringup boris.launch.py use_navigation:=true map_file:=lab_2026_2.yaml use_neck:=true
+ros2 launch fbot_bringup boris.launch.py robot_version:=v1                 # old BORIS (v2 is the default)
+ros2 launch fbot_bringup manipulator.launch.py                             # the arm (xArm6), next to boris.launch.py
 ```
 
 | Launch | Starts |
 |--------|--------|
-| `robot.launch.py` | everything below, selected with `use_*` flags |
+| `boris.launch.py` | everything below, selected with `use_*` flags |
 | `base.launch.py` | `robot_state_publisher`, `ros2_control` (hoverboard), diff-drive controller. Run alone for a drive test |
 | `sensors.launch.py` | two Hokuyo lasers (`/scan2`, `/scan3`), BNO055 IMU, optional Sick (`/scan`, `sick.launch.py`) |
 | `localization.launch.py` | EKF, owner of `odom -> base_footprint` |
 | `navigation.launch.py` | Nav2 (AMCL + map) or SLAM, nav only |
 | `neck.launch.py` | neck controller + face |
-| `manipulator.launch.py` | arm: MoveIt + driver + `fbot_manipulator` (`arm_type` xarm6 / wx200, `xarm_fake`, `robot_ip`), attached to `arm_mount_link` (`mount_xyz`, `mount_rpy`). Included by tasks, not by `robot.launch.py` |
+| `manipulator.launch.py` | arm: MoveIt + driver + `fbot_manipulator` (`arm_type` xarm6 / wx200, `xarm_fake`, `robot_ip`), attached to `arm_mount_link` (`mount_xyz`, `mount_rpy`). Included by tasks, not by `boris.launch.py` |
 
-Model, geometry and parameter locations are described in `fbot_description/README.md`. The old `description.launch.py` and `interbotix_arm.launch.py` were removed: use `robot.launch.py` (+ `manipulator.launch.py` for the arm).
+Model, geometry and parameter locations are described in `fbot_description/README.md`. The old `description.launch.py` and `interbotix_arm.launch.py` were removed: use `boris.launch.py` (+ `manipulator.launch.py` for the arm).
 
 ---
 

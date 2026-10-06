@@ -1,6 +1,6 @@
 """Robot base: robot_description + ros2_control (hoverboard) + diff drive controller.
 
-Normally included by robot.launch.py. Run it alone to test the base only:
+Normally included by boris.launch.py. Run it alone to test the base only:
 
   ros2 launch fbot_bringup base.launch.py
   ros2 launch fbot_bringup base.launch.py robot_version:=v1 use_neck:=false

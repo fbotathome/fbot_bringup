@@ -7,7 +7,7 @@
   <maintainer email="jfsslemos@gmail.com">jota</maintainer>
   <license>TODO: License declaration</license>
 
-  <!-- robot body (robot.launch.py and the launches it includes).
+  <!-- robot body (boris.launch.py and the launches it includes).
        Also needed at runtime ON THE ROBOT but intentionally not declared here, so
        bringup still builds on a laptop without the hardware stack:
        fbot_head (neck_controller) and hoverboard_driver (ros2_control plugin). -->

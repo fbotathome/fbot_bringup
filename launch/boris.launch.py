@@ -1,16 +1,16 @@
 """Start the BORIS robot body. THE entry point for hardware bringup.
 
-  ros2 launch fbot_bringup robot.launch.py                          # base + lasers + IMU + EKF
-  ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
-  ros2 launch fbot_bringup robot.launch.py use_neck:=true use_navigation:=true
-  ros2 launch fbot_bringup robot.launch.py robot_version:=v1        # old BORIS (v2 is the default)
-  ros2 launch fbot_bringup robot.launch.py use_slam:=true use_navigation:=true   # map while driving
-  ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
+  ros2 launch fbot_bringup boris.launch.py                          # base + lasers + IMU + EKF
+  ros2 launch fbot_bringup boris.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
+  ros2 launch fbot_bringup boris.launch.py use_neck:=true use_navigation:=true
+  ros2 launch fbot_bringup boris.launch.py robot_version:=v1        # old BORIS (v2 is the default)
+  ros2 launch fbot_bringup boris.launch.py use_slam:=true use_navigation:=true   # map while driving
+  ros2 launch fbot_bringup boris.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
 
 Task launches (fbot_behavior) include this ONCE (instead of separate description /
 navigation / neck launches), plus manipulator.launch.py when they use the arm.
 
-  robot.launch.py
+  boris.launch.py
    |- base.launch.py          description + ros2_control (hoverboard) + diff drive
    |- sensors.launch.py       Hokuyo x2, IMU            (use_lasers, use_imu, use_sick)
    |- localization.launch.py  EKF                       (use_localization)

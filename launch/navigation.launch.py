@@ -1,7 +1,7 @@
 """Nav2 (AMCL + planners + costmaps) or SLAM, on top of an ALREADY RUNNING robot.
 
 This launch does NOT start the robot description, ros2_control, sensors or EKF.
-Use robot.launch.py use_navigation:=true to start everything at once.
+Use boris.launch.py use_navigation:=true to start everything at once.
 
 
   ros2 launch fbot_bringup navigation.launch.py map_file:=lab_2026_2.yaml
@@ -42,7 +42,7 @@ def _launch_setup(context, *args, **kwargs):
     )
 
     nav = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(nav_share, 'launch', 'nav.launch.py')),
+        PythonLaunchDescriptionSource(os.path.join(nav_share, 'launch', 'navigation.launch.py')),
         launch_arguments={
             'use_slam': LaunchConfiguration('use_slam'),
             'use_keepout': LaunchConfiguration('use_keepout_zones'),

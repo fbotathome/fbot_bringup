@@ -1,6 +1,6 @@
 """Bring up the BORIS manipulator: arm driver + MoveIt + fbot_manipulator interface.
 
-Task launches that manipulate include this next to robot.launch.py:
+Task launches that manipulate include this next to boris.launch.py:
 
     ros2 launch fbot_bringup manipulator.launch.py                         # xArm6, real arm
     ros2 launch fbot_bringup manipulator.launch.py robot_ip:=192.168.1.185
@@ -13,7 +13,7 @@ Starts, for the chosen arm_type:
   3. one static transform attaching the arm to BORIS: arm_mount_link -> <arm root>
      (xarm6: world, wx200: wx200/base_link). Set the pose with mount_xyz / mount_rpy.
 
-Coexistence with the BORIS base (robot.launch.py): the xArm stack runs in the root
+Coexistence with the BORIS base (boris.launch.py): the xArm stack runs in the root
 namespace with its own /controller_manager and joint_state_publisher; BORIS uses
 /base/controller_manager and boris_joint_state_publisher. The xArm robot_description
 topic is remapped to /xarm/robot_description so BORIS keeps /robot_description.
