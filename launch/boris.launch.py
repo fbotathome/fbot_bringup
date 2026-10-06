@@ -2,7 +2,7 @@
 
   ros2 launch fbot_bringup boris.launch.py                          # base + lasers + IMU + EKF
   ros2 launch fbot_bringup boris.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
-  ros2 launch fbot_bringup boris.launch.py use_neck:=true use_navigation:=true
+  ros2 launch fbot_bringup boris.launch.py use_neck:=false use_navigation:=true  # no neck
   ros2 launch fbot_bringup boris.launch.py robot_version:=v1        # old BORIS (v2 is the default)
   ros2 launch fbot_bringup boris.launch.py use_slam:=true use_navigation:=true   # map while driving
   ros2 launch fbot_bringup boris.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
@@ -59,7 +59,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='RViz2 with the nav config'),
         DeclareLaunchArgument('use_scan_watchdog', default_value='true',
                               description='With navigation: banner when /scan (Sick) is missing or the robot is not localized'),
-        DeclareLaunchArgument('use_neck', default_value='false', description='Neck controller, face + neck in the URDF'),
+        DeclareLaunchArgument('use_neck', default_value='true', description='Neck controller, face + neck in the URDF'),
         DeclareLaunchArgument('use_arm_mount', default_value='true',
                               description='Arm mounting plate in the URDF (parent of the arm, see manipulator.launch.py)'),
         DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),
