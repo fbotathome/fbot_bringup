@@ -3,7 +3,7 @@
   ros2 launch fbot_bringup robot.launch.py                          # base + lasers + IMU + EKF
   ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml
   ros2 launch fbot_bringup robot.launch.py use_neck:=true use_navigation:=true
-  ros2 launch fbot_bringup robot.launch.py base_version:=v2         # new Shark base
+  ros2 launch fbot_bringup robot.launch.py robot_version:=v2        # BORIS v2
   ros2 launch fbot_bringup robot.launch.py use_slam:=true use_navigation:=true   # map while driving
   ros2 launch fbot_bringup robot.launch.py use_navigation:=true use_scan_watchdog:=false  # no /scan banners
 
@@ -45,8 +45,8 @@ def generate_launch_description():
     lc = LaunchConfiguration
 
     declared = [
-        DeclareLaunchArgument('base_version', default_value='v1',
-                              description='Shark base version (fbot_description/config/base/<v>.yaml)'),
+        DeclareLaunchArgument('robot_version', default_value='v1',
+                              description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
         DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),
         DeclareLaunchArgument('use_sick', default_value='false', description='Sick LMS (publishes /scan)'),
@@ -66,7 +66,7 @@ def generate_launch_description():
     ]
 
     base = include('base.launch.py', args={
-        'base_version': lc('base_version'),
+        'robot_version': lc('robot_version'),
         'use_neck': lc('use_neck'),
         'use_arm_mount': lc('use_arm_mount'),
         'arm_z_position': lc('arm_z_position'),
@@ -83,6 +83,7 @@ def generate_launch_description():
         'use_keepout_zones': lc('use_keepout_zones'),
         'map_file': lc('map_file'),
         'use_navigation_rviz': lc('use_navigation_rviz'),
+        'robot_version': lc('robot_version'),
     })
     neck = include('neck.launch.py', condition=IfCondition(lc('use_neck')))
     scan_watchdog = Node(

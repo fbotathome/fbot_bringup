@@ -7,6 +7,6 @@ In the skill, yaml call, the namespace must be parametrized inside 'parameters' 
 Robot body rules:
 The robot (description, base, sensors, EKF, navigation, neck, arm) is started ONLY by robot.launch.py;
 task launches include it once and never include description / navigation / neck launches separately;
-geometry (wheel radius, separation, base size) lives only in fbot_description/config/base/<base_version>.yaml;
+geometry (wheel radius, separation, base size) lives only in fbot_description/config/robot/<robot_version>.yaml;
 the arm is started only by manipulator.launch.py, included by the tasks that use it;
 the base ros2_control runs in the `base` namespace so it can coexist with the arm stack.

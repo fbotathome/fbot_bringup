@@ -71,7 +71,7 @@ manipulator.launch.py      only if the task uses the arm
 ```bash
 ros2 launch fbot_bringup robot.launch.py                                   # base + lasers + IMU + EKF
 ros2 launch fbot_bringup robot.launch.py use_navigation:=true map_file:=lab_2026_2.yaml use_neck:=true
-ros2 launch fbot_bringup robot.launch.py base_version:=v2                  # new Shark base
+ros2 launch fbot_bringup robot.launch.py robot_version:=v2                 # BORIS v2
 ros2 launch fbot_bringup manipulator.launch.py                             # the arm (xArm6), next to robot.launch.py
 ```
 

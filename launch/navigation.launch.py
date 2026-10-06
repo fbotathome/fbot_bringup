@@ -8,8 +8,8 @@ Use robot.launch.py use_navigation:=true to start everything at once.
   ros2 launch fbot_bringup navigation.launch.py use_slam:=true
   ros2 launch fbot_bringup navigation.launch.py use_keepout_zones:=true
 
-The robot footprint is taken from fbot_description/config/footprint.yaml and
-written into the Nav2 params (leaf key `footprint`).
+The robot footprint is taken from fbot_description/config/robot/<robot_version>.yaml
+(key `footprint`) and written into the Nav2 params (leaf key `footprint`).
 """
 import os
 
@@ -29,7 +29,8 @@ def _launch_setup(context, *args, **kwargs):
     params_name = 'nav2_params_keepout.yaml' if use_keepout else 'nav2_params.yaml'
     params_file = os.path.join(nav_share, 'param', params_name)
 
-    footprint_file = os.path.join(get_package_share_directory('fbot_description'), 'config', 'footprint.yaml')
+    robot_version = LaunchConfiguration('robot_version').perform(context)
+    footprint_file = os.path.join(get_package_share_directory('fbot_description'), 'config', 'robot', f'{robot_version}.yaml')
     with open(footprint_file) as f:
         footprint = yaml.safe_load(f)['footprint']
 
@@ -62,5 +63,6 @@ def generate_launch_description():
         DeclareLaunchArgument('use_keepout_zones', default_value='false', description='Enable keepout zone filter'),
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='Start RViz2 with the nav config'),
         DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('robot_version', default_value='v1', description='BORIS version (footprint source)'),
         OpaqueFunction(function=_launch_setup),
     ])
