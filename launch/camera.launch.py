@@ -60,7 +60,9 @@ def generate_launch_description():
     )
 
     realsense_launch_args = {
-        'camera_namespace': 'fbot_vision',
+        # topics /realsense/... like the Femto's /femtobolt/... (orbbec ignores camera_namespace);
+        # fbot_recognition config/yolov8_realsense.yaml subscribes to /realsense/color/image_raw
+        'camera_namespace': '',
         'camera_name': 'realsense',
         'enable_rgbd': 'true',
         'enable_sync': 'true',
