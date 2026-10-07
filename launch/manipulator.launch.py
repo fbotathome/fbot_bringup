@@ -12,6 +12,14 @@ Starts, for the chosen arm_type:
   2. the matching fbot_manipulator interface (motion primitives + MTC task server),
   3. one static transform attaching the arm to BORIS: arm_mount_link -> <arm root>
      (xarm6: world, wx200: wx200/base_link). Set the pose with mount_xyz / mount_rpy.
+  4. xarm6 + use_wrist_camera: the UFACTORY RealSense stand on the wrist (link_eef mesh, also
+     a MoveIt collision body) and one static transform link_eef -> realsense_link.
+     realsense_link is the root of the RealSense driver tree (camera.launch.py,
+     camera_name:=realsense, publish_tf on), so its optical frames follow the arm. The xArm
+     copies of those frames stay off (add_d435i_links:=false): one publisher per frame, with
+     the camera's factory calibration. The Femto Bolt (main camera) is on the neck in the
+     BORIS URDF (fbot_description urdf/v2/neck.xacro). v1 has realsense_link on the neck:
+     use use_wrist_camera:=false there.
 
 Coexistence with the BORIS base (boris.launch.py): the xArm stack runs in the root
 namespace with its own /controller_manager and joint_state_publisher; BORIS uses
@@ -25,12 +33,18 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetRemap
 from launch_ros.substitutions import FindPackageShare
 
-# Arm root frame and its default pose on BORIS' arm plate (arm_mount_link).
-# TODO(boris_v2): the xArm mount pose is not measured yet (decided with the v2 structure).
+# Arm root frame and its default pose on arm_mount_link. v2: arm_mount_link is the bottom
+# centre of the xArm base from the Onshape export (fbot_description config/robot/v2.yaml),
+# which is also the xArm's own base origin, so the offset is zero. The CAD tool does not
+# extract the arm's yaw (assumed forward); correct it with mount_rpy if needed.
 ARMS = {
     'xarm6': {'root': 'world', 'xyz': '0 0 0', 'rpy': '0 0 0'},
     'wx200': {'root': 'wx200/base_link', 'xyz': '0.1 0 0.0235', 'rpy': '0 0 0'},
 }
+
+# link_eef -> realsense_link on the UFACTORY D435i stand
+# (xarm_description/urdf/camera/realsense_d435i.urdf.xacro, realsense_link_joint)
+WRIST_CAMERA_TF = {'xyz': '0.06746 -0.0175 0.0237', 'rpy': '3.141592653589793 -1.5707963267948966 0'}
 
 
 def _include(package, launch_file, args):
@@ -54,12 +68,28 @@ def _mount_tf(context, arm_type):
     )
 
 
+def _wrist_camera_tf():
+    x, y, z = WRIST_CAMERA_TF['xyz'].split()
+    roll, pitch, yaw = WRIST_CAMERA_TF['rpy'].split()
+    return Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='wrist_camera_tf',
+        arguments=['--x', x, '--y', y, '--z', z, '--roll', roll, '--pitch', pitch, '--yaw', yaw,
+                   '--frame-id', 'link_eef', '--child-frame-id', 'realsense_link'],
+        output='screen',
+    )
+
+
 def _launch_setup(context, *args, **kwargs):
     arm_type = LaunchConfiguration('arm_type').perform(context)
 
     if arm_type == 'xarm6':
         fake = LaunchConfiguration('xarm_fake').perform(context).lower() == 'true'
         moveit_args = {'add_mtc': 'true', 'add_gripper': LaunchConfiguration('add_gripper')}
+        wrist_camera = LaunchConfiguration('use_wrist_camera').perform(context).lower() == 'true'
+        if wrist_camera:
+            moveit_args.update({'add_realsense_d435i': 'true', 'add_d435i_links': 'false'})
         if not fake:
             moveit_args['robot_ip'] = LaunchConfiguration('robot_ip')
         arm = GroupAction(scoped=True, actions=[
@@ -70,6 +100,7 @@ def _launch_setup(context, *args, **kwargs):
             _include('fbot_manipulator', 'manipulator_interface.launch.py',
                      {'arm_type': 'xarm6', 'enable_surfaces': LaunchConfiguration('enable_surfaces')}),
         ])
+        return [arm, _mount_tf(context, arm_type)] + ([_wrist_camera_tf()] if wrist_camera else [])
     else:  # wx200: the Interbotix stack is namespaced (/wx200), no remap needed
         arm = GroupAction(scoped=True, actions=[
             _include('interbotix_xsarm_moveit', 'xsarm_moveit.launch.py', {
@@ -95,6 +126,8 @@ def generate_launch_description():
                               description='xarm6: MoveIt with fake controllers (no arm connected)'),
         DeclareLaunchArgument('add_gripper', default_value='true',
                               description='xarm6: include the xArm gripper (fbot_manipulator MTC uses it)'),
+        DeclareLaunchArgument('use_wrist_camera', default_value='true',
+                              description='xarm6: RealSense stand on the wrist + link_eef -> realsense_link'),
         DeclareLaunchArgument('enable_surfaces', default_value='true',
                               description='xarm6: collision surfaces around objects in MTC tasks'),
         DeclareLaunchArgument('hardware_type', default_value='actual',
