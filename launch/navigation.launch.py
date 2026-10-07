@@ -26,7 +26,7 @@ def _launch_setup(context, *args, **kwargs):
     nav_share = get_package_share_directory('fbot_navigation')
 
     use_keepout = LaunchConfiguration('use_keepout_zones').perform(context).lower() == 'true'
-    params_name = 'nav2_params_keepout.yaml' if use_keepout else 'nav2_params.yaml'
+    params_name = 'nav2_params_keepout.yaml' if use_keepout else 'hockuyos_params.yaml'
     params_file = os.path.join(nav_share, 'param', params_name)
 
     robot_version = LaunchConfiguration('robot_version').perform(context)
