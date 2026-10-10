@@ -242,4 +242,3 @@ git push origin feat/sim_inspection_fixes
 
 ```
 
-Agora a equipe tem um guia completo, interativo e a prova de erros de sintaxe direto no GitHub! Se precisar de mais alguma coisa em cima desse material é só me chamar.
