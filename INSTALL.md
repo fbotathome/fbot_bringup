@@ -228,17 +228,7 @@ ros2 run fbot_behavior inspection
 
 ```
 
-### Como incluir isso no Git
-Como estamos trabalhando em uma documentação, o ideal é colocá-la na mesma branch da simulação antes de levar tudo para a *main*. 
 
-1. Se você for na pasta do `fbot_bringup`, o arquivo `README.md` original da equipe deve estar lá.
-2. Abra ele com `gedit ~/fbot_ws/src/fbot_bringup/README.md` e cole esse conteúdo.
-3. Se quiser adicionar ao Git da equipe, basta rodar:
-```zsh
-cd ~/fbot_ws/src/fbot_bringup
-git add README.md
-git commit -m "docs: add full automated installation guide in markdown"
-git push origin feat/sim_inspection_fixes
 
 ```
 
