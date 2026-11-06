@@ -182,6 +182,34 @@ def generate_launch_description():
         )
     )
 
+    # ── Point cloud reconstruction (this machine, camera on the Jetson) ─────────
+
+    pointcloud_reconstruction_launch = os.path.join(
+        get_package_share_directory('fbot_bringup'), 'launch', 'pointcloud_reconstruction.launch.py'
+    )
+
+    realsense_reconstruction = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(pointcloud_reconstruction_launch),
+        launch_arguments={'camera_name': 'realsense'}.items(),
+        condition=IfCondition(
+            PythonExpression([
+                "'true' if '", LaunchConfiguration('use_realsense'), "' == 'true' and '",
+                LaunchConfiguration('use_remote'), "' == 'true' else 'false'"
+            ])
+        )
+    )
+
+    femtobolt_reconstruction = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(pointcloud_reconstruction_launch),
+        launch_arguments={'camera_name': 'femtobolt'}.items(),
+        condition=IfCondition(
+            PythonExpression([
+                "'true' if '", LaunchConfiguration('use_femtobolt'), "' == 'true' and '",
+                LaunchConfiguration('use_remote'), "' == 'true' else 'false'"
+            ])
+        )
+    )
+
     return LaunchDescription([
         *declared_arguments,
         OpaqueFunction(function=validate_camera_config),
@@ -189,4 +217,6 @@ def generate_launch_description():
         femtobolt_local,
         realsense_remote,
         femtobolt_remote,
+        realsense_reconstruction,
+        femtobolt_reconstruction,
     ])
