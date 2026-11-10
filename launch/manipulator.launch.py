@@ -120,7 +120,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('arm_type', default_value='xarm6', choices=list(ARMS),
                               description="'xarm6' (UFACTORY, current arm) or 'wx200' (Interbotix, option)"),
-        DeclareLaunchArgument('robot_ip', default_value='192.168.1.208',
+        DeclareLaunchArgument('robot_ip', default_value='192.168.4.208',
                               description='xarm6: IP of the xArm control box'),
         DeclareLaunchArgument('xarm_fake', default_value='false',
                               description='xarm6: MoveIt with fake controllers (no arm connected)'),
