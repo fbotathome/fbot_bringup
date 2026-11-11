@@ -81,7 +81,13 @@ def launch_setup(context):
                         ('rgb/image_rect_color', color_topic),
                         ('depth_registered/image_rect', f'{out}/depth/image_raw'),
                         ('points', f'{out}/points'),
+                        
                     ],
+                    parameters=[{
+                        'queue_size': 30,
+                        'exact_sync': False,
+                    }],
+
                 ),
             ],
             output='screen',
