@@ -17,6 +17,8 @@ JETSON_SETUP_BASH = '/home/jetson/jetson_ws/install/setup.bash'
 def validate_camera_config(context):
     if (
         context.launch_configurations.get('validate_config', 'true') == 'true'
+        # remote: the cameras already run as a service on the Jetson
+        and context.launch_configurations.get('use_remote', 'true') == 'false'
         and context.launch_configurations.get('use_realsense', 'false') == 'false'
         and context.launch_configurations.get('use_femtobolt', 'false') == 'false'
     ):
@@ -182,32 +184,25 @@ def generate_launch_description():
         )
     )
 
-    # ── Point cloud reconstruction (this machine, camera on the Jetson) ─────────
+    # ── Point cloud reconstruction (this machine, cameras on the Jetson) ────────
 
     pointcloud_reconstruction_launch = os.path.join(
         get_package_share_directory('fbot_bringup'), 'launch', 'pointcloud_reconstruction.launch.py'
     )
 
+    # The cameras run as a service on the Jetson, so with use_remote the reconstruction of
+    # both runs here even if use_realsense / use_femtobolt are false.
+
     realsense_reconstruction = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(pointcloud_reconstruction_launch),
         launch_arguments={'camera_name': 'realsense'}.items(),
-        condition=IfCondition(
-            PythonExpression([
-                "'true' if '", LaunchConfiguration('use_realsense'), "' == 'true' and '",
-                LaunchConfiguration('use_remote'), "' == 'true' else 'false'"
-            ])
-        )
+        condition=IfCondition(LaunchConfiguration('use_remote'))
     )
 
     femtobolt_reconstruction = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(pointcloud_reconstruction_launch),
         launch_arguments={'camera_name': 'femtobolt'}.items(),
-        condition=IfCondition(
-            PythonExpression([
-                "'true' if '", LaunchConfiguration('use_femtobolt'), "' == 'true' and '",
-                LaunchConfiguration('use_remote'), "' == 'true' else 'false'"
-            ])
-        )
+        condition=IfCondition(LaunchConfiguration('use_remote'))
     )
 
     return LaunchDescription([
@@ -215,8 +210,8 @@ def generate_launch_description():
         OpaqueFunction(function=validate_camera_config),
         realsense_local,
         femtobolt_local,
-        realsense_remote,
-        femtobolt_remote,
+        # realsense_remote,
+        # femtobolt_remote,
         realsense_reconstruction,
         femtobolt_reconstruction,
     ])
