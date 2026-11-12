@@ -48,8 +48,8 @@ def generate_launch_description():
         DeclareLaunchArgument('robot_version', default_value='v2',
                               description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
-        DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),
-        DeclareLaunchArgument('use_sick', default_value='false', description='Sick LMS (publishes /scan)'),
+        DeclareLaunchArgument('use_imu', default_value='false', description='BNO055 IMU'),
+        DeclareLaunchArgument('use_sick', default_value='true', description='Sick LMS (publishes /scan)'),
         DeclareLaunchArgument('imu_port', default_value='/dev/ttyIMU', description='IMU serial port (udev symlink)'),
         DeclareLaunchArgument('use_localization', default_value='true', description='EKF (odom -> base_footprint)'),
         DeclareLaunchArgument('use_navigation', default_value='false', description='Nav2 (or SLAM with use_slam)'),
@@ -74,7 +74,8 @@ def generate_launch_description():
     sensors = include('sensors.launch.py', args={
         'use_lasers': lc('use_lasers'),
         'use_imu': lc('use_imu'),
-        'use_sick': lc('use_sick'),
+        'use_sick': 'false',
+        # 'use_sick': lc('use_sick'),
         'imu_port': lc('imu_port'),
     })
     localization = include('localization.launch.py', condition=IfCondition(lc('use_localization')))
