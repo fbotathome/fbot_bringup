@@ -33,7 +33,7 @@
         <!-- Note: Range filter applies only to Pointcloud messages, not to LaserScan messages.                     -->
         <!-- Using range_filter_handling 4 or 5 requires handling of FLT_MAX and NAN values in an application.      -->
         <param name="range_min" type="double" value="0.05"/>
-        <param name="range_max" type="double" value="70.0"/>
+        <param name="range_max" type="double" value="40.0"/>
         <param name="range_filter_handling" type="int" value="0"/>
         
         <param name="hostname" type="string" value="$(arg hostname)"/>
@@ -52,7 +52,7 @@
         <param name="scandatacfg_timingflag" type="int" value="-1"/> <!-- Set timing flag LMDscandatacfg (LMS-1XX, LMS-1XXX, LMS-4XXX, LMS-5XX, MRS-1XXX, MRS-6XXX, NAV-2XX, TIM-240, TIM-4XX, TIM-5XX, TIM-7XX, TIM-7XXS): -1: use default (off for TiM-240, otherwise on), 0: do not send time information, 1: send time information -->
 
         <param name="ang_res" type="double" value="0.5" /> <!-- Supported values are "0.25" and "0.50" -->
-        <param name="scan_freq" type="double" value="50" /> <!-- Supported values are "25" and "50" -->
+        <param name="scan_freq" type="double" value="25" /> <!-- Supported values are "25" and "50" -->
         <!-- Note: angular resolution and scanning frequency of a LMS111 can be configured by parameter "ang_res" (values "0.25" or "0.5") and "scan_freq"  (values "25" or "50") -->
         <!-- After setting "ang_res" and "scan_freq", it takes ca. 30 seconds until the pointcloud is published. -->
         <!-- Recommendation: It is recommended to specify the desired angular resolution and scan rate in this launch file. -->

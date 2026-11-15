@@ -1,4 +1,5 @@
 import os
+import socket
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
@@ -12,9 +13,28 @@ from launch_remote_ssh import LaunchRemoteSSH
 JETSON_USER = 'jetson'
 JETSON_MACHINE = 'jetson'
 JETSON_SETUP_BASH = '/home/jetson/jetson_ws/install/setup.bash'
+# The cameras are physically on the Jetson; the camera drivers may only run there
+CAMERA_HOSTNAME = 'jetson'
 
 
 def validate_camera_config(context):
+    hostname = socket.gethostname()
+    if (
+        context.launch_configurations.get('use_remote', 'true') == 'false'
+        and hostname != CAMERA_HOSTNAME
+        and (
+            context.launch_configurations.get('use_realsense', 'false') == 'true'
+            or context.launch_configurations.get('use_femtobolt', 'false') == 'true'
+        )
+    ):
+        # Running the drivers off the Jetson creates a /femtobolt/camera_container with the
+        # same name as the one in the Jetson service; the load_node request then lands on the
+        # Jetson container, loads a second driver and kills the running Femto stream.
+        raise Exception(
+            f"Camera drivers can only run on '{CAMERA_HOSTNAME}' (this host is '{hostname}'). "
+            "The cameras run as the fbot_camera service on the Jetson: use use_remote:=true here."
+        )
+
     if (
         context.launch_configurations.get('validate_config', 'true') == 'true'
         # remote: the cameras already run as a service on the Jetson
