@@ -25,6 +25,27 @@ def generate_launch_description():
             description='Host URL for the VLM API. Must be set for openai and ollama.'
         ))
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'vlm_api_timeout',
+            default_value='10',
+            description='Seconds (integer) to wait for the primary VLM API before using the fallback.'
+        ))
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'vlm_fallback_model',
+            default_value='gemma4:latest',
+            description="Local Ollama model used when the primary model fails ('none' disables it)."
+        ))
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'vlm_fallback_host',
+            default_value='http://jetson:11434',
+            description='Ollama server for the fallback model (Jetson).'
+        ))
+
     vlm = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('fbot_vlm'), 'launch', 'vlm.launch.py')
@@ -32,6 +53,9 @@ def generate_launch_description():
         launch_arguments={
             'vlm_api_model': LaunchConfiguration('vlm_api_model'),
             'vlm_api_host': LaunchConfiguration('vlm_api_host'),
+            'vlm_api_timeout': LaunchConfiguration('vlm_api_timeout'),
+            'vlm_fallback_model': LaunchConfiguration('vlm_fallback_model'),
+            'vlm_fallback_host': LaunchConfiguration('vlm_fallback_host'),
         }.items()
     )
 
