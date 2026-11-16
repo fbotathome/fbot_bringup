@@ -116,6 +116,9 @@ def _launch_setup(context, *args, **kwargs):
         output='both',
         parameters=[{
             'source_list': [f'/{BASE_NS}/joint_states', '/boris_head/joint_states'],
+            # republishes the latest values stamped "now": keep it above the neck state rate
+            # (30 Hz) so the camera TF does not lag the neck (default 10 Hz)
+            'rate': 50,
         }],
     )
 
