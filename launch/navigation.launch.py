@@ -27,7 +27,7 @@ def _launch_setup(context, *args, **kwargs):
 
     use_slam = LaunchConfiguration('use_slam').perform(context).lower() == 'true'
     # SLAM mode needs allow_unknown + a lighter MPPI (see the header of hockuyos_slam_params.yaml)
-    params_name = 'hockuyos_slam_params.yaml' if use_slam else 'hockuyos_params.yaml'
+    params_name = 'slam_params.yaml' if use_slam else 'hockuyos_params.yaml'
     params_file = os.path.join(nav_share, 'param', params_name)
 
     robot_version = LaunchConfiguration('robot_version').perform(context)
