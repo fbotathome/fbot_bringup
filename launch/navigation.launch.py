@@ -25,8 +25,9 @@ from nav2_common.launch import RewrittenYaml
 def _launch_setup(context, *args, **kwargs):
     nav_share = get_package_share_directory('fbot_navigation')
 
-    use_keepout = LaunchConfiguration('use_keepout_zones').perform(context).lower() == 'true'
-    params_name = 'nav2_params_keepout.yaml' if use_keepout else 'hockuyos_params.yaml'
+    use_slam = LaunchConfiguration('use_slam').perform(context).lower() == 'true'
+    # SLAM mode needs allow_unknown + a lighter MPPI (see the header of hockuyos_slam_params.yaml)
+    params_name = 'hockuyos_slam_params.yaml' if use_slam else 'hockuyos_params.yaml'
     params_file = os.path.join(nav_share, 'param', params_name)
 
     robot_version = LaunchConfiguration('robot_version').perform(context)

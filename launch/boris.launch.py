@@ -45,24 +45,20 @@ def generate_launch_description():
     lc = LaunchConfiguration
 
     declared = [
-        DeclareLaunchArgument('robot_version', default_value='v2',
-                              description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
+        DeclareLaunchArgument('robot_version', default_value='v2', description='BORIS version (fbot_description/config/robot/<v>.yaml)'),
         DeclareLaunchArgument('use_lasers', default_value='true', description='Hokuyo lasers (/scan2, /scan3)'),
         DeclareLaunchArgument('use_imu', default_value='true', description='BNO055 IMU'),
         DeclareLaunchArgument('use_sick', default_value='true', description='Sick LMS (publishes /scan)'),
         DeclareLaunchArgument('imu_port', default_value='/dev/ttyIMU', description='IMU serial port (udev symlink)'),
         DeclareLaunchArgument('use_localization', default_value='true', description='EKF (odom -> base_footprint)'),
+        DeclareLaunchArgument('use_neck', default_value='true', description='Neck controller, face + neck in the URDF'),
+        DeclareLaunchArgument('use_arm_mount', default_value='true', description='Arm mounting plate in the URDF (parent of the arm, see manipulator.launch.py)'),
+        DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),
         DeclareLaunchArgument('use_navigation', default_value='false', description='Nav2 (or SLAM with use_slam)'),
         DeclareLaunchArgument('use_slam', default_value='false', description='slam_toolbox instead of AMCL + map'),
-        DeclareLaunchArgument('use_keepout_zones', default_value='false', description='Keepout zone filter'),
         DeclareLaunchArgument('map_file', default_value='lab_2026_2.yaml', description='Map in fbot_navigation/maps'),
         DeclareLaunchArgument('use_navigation_rviz', default_value='false', description='RViz2 with the nav config'),
-        DeclareLaunchArgument('use_scan_watchdog', default_value='true',
-                              description='With navigation: banner when /scan (Sick) is missing or the robot is not localized'),
-        DeclareLaunchArgument('use_neck', default_value='true', description='Neck controller, face + neck in the URDF'),
-        DeclareLaunchArgument('use_arm_mount', default_value='true',
-                              description='Arm mounting plate in the URDF (parent of the arm, see manipulator.launch.py)'),
-        DeclareLaunchArgument('arm_z_position', default_value='0.315', description='Arm plate height on the torso [m]'),
+        DeclareLaunchArgument('use_scan_watchdog', default_value='true', description='With navigation: banner when /scan (Sick) is missing or the robot is not localized'),
     ]
 
     base = include('base.launch.py', args={
@@ -82,7 +78,6 @@ def generate_launch_description():
     localization = include('localization.launch.py', condition=IfCondition(lc('use_localization')))
     navigation = include('navigation.launch.py', condition=IfCondition(lc('use_navigation')), args={
         'use_slam': lc('use_slam'),
-        'use_keepout_zones': lc('use_keepout_zones'),
         'map_file': lc('map_file'),
         'use_navigation_rviz': lc('use_navigation_rviz'),
         'robot_version': lc('robot_version'),
